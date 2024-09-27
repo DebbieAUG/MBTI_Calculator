@@ -1,1 +1,1 @@
-# GenAIModelling
+# GenAI Modelling Repository
