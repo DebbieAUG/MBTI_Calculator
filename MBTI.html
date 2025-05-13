@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MBTI Mini Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        h1, h2, h3 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .question {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .answers {
+            margin-top: 10px;
+        }
+        .answers label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        .answers input[type="radio"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        button {
+            display: block;
+            margin: 30px auto;
+            padding: 15px 30px;
+            font-size: 18px;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .result {
+            margin-top: 40px;
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-size: 24px;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <h1>MBTI Mini Test</h1>
+    <form id="mbtiForm"></form>
+    <button onclick="calculateMBTI()">Submit</button>
+
+    <div class="result" id="resultSection"></div>
+
+    <script>
+        const questions = [
+            // E vs I
+            ["At a party, do you:", "a) Interact with many people, including strangers.", "b) Interact with a few people you know well.", "EI"],
+            ["Are you more drawn to:", "a) Action and activity.", "b) Reflection and ideas.", "EI"],
+            ["Do you prefer to:", "a) Talk through ideas.", "b) Think quietly before speaking.", "EI"],
+            ["In your free time, do you:", "a) Seek out social events.", "b) Prefer quiet time alone.", "EI"],
+            ["Are you more energized by:", "a) Group activities.", "b) Time spent alone.", "EI"],
+            
+            // S vs N
+            ["Are you more focused on:", "a) Facts and present realities.", "b) Ideas and future possibilities.", "SN"],
+            ["When solving problems, you:", "a) Prefer practical solutions.", "b) Enjoy exploring new theories.", "SN"],
+            ["Are you more impressed by:", "a) Realistic achievements.", "b) Imaginative ideas.", "SN"],
+            ["Do you prefer information that is:", "a) Concrete and detailed.", "b) Abstract and conceptual.", "SN"],
+            ["In conversations, you:", "a) Focus on what is actually said.", "b) Read between the lines.", "SN"],
+            
+            // T vs F
+            ["When making decisions, you:", "a) Rely on logic and consistency.", "b) Consider people and emotions.", "TF"],
+            ["You value being seen as:", "a) Fair and objective.", "b) Compassionate and caring.", "TF"],
+            ["When giving feedback, you are:", "a) Direct and critical if needed.", "b) Gentle to avoid hurting feelings.", "TF"],
+            ["In conflict situations, you prefer to:", "a) Analyze the situation logically.", "b) Focus on maintaining harmony.", "TF"],
+            ["You are more motivated by:", "a) Achieving goals.", "b) Helping others.", "TF"],
+            
+            // J vs P
+            ["Do you prefer to:", "a) Plan everything in advance.", "b) Keep your options open.", "JP"],
+            ["Are you more comfortable when:", "a) Things are decided.", "b) Things are left flexible.", "JP"],
+            ["When working on a project, you:", "a) Like to finish ahead of schedule.", "b) Tend to work close to deadlines.", "JP"],
+            ["Do you prefer activities that are:", "a) Structured and organized.", "b) Open-ended and spontaneous.", "JP"],
+            ["Do you feel more satisfied after:", "a) Completing a task.", "b) Starting something new.", "JP"]
+        ];
+
+        const form = document.getElementById("mbtiForm");
+
+        // Generate Questions Dynamically
+        questions.forEach((q, idx) => {
+            const qNum = idx + 1;
+            const div = document.createElement("div");
+            div.className = "question";
+            div.innerHTML = `<strong>Q${qNum}. ${q[0]}</strong><div class="answers">
+                <label><input type="radio" name="q${qNum}" value="a" required> ${q[1]}</label>
+                <label><input type="radio" name="q${qNum}" value="b"> ${q[2]}</label>
+            </div>`;
+            form.appendChild(div);
+        });
+
+        function calculateMBTI() {
+            const scores = { "E": 0, "I": 0, "S": 0, "N": 0, "T": 0, "F": 0, "J": 0, "P": 0 };
+
+            for (let i = 1; i <= 20; i++) {
+                const answer = document.querySelector(`input[name="q${i}"]:checked`)?.value;
+                if (!answer) {
+                    alert(`Please answer question ${i}.`);
+                    return;
+                }
+                const dimension = questions[i - 1][3]; // EI, SN, TF, JP
+                const side = (answer === "a") ? dimension[0] : dimension[1];
+                scores[side]++;
+            }
+
+            const mbtiType = 
+                (scores["E"] >= scores["I"] ? "E" : "I") +
+                (scores["S"] >= scores["N"] ? "S" : "N") +
+                (scores["T"] >= scores["F"] ? "T" : "F") +
+                (scores["J"] >= scores["P"] ? "J" : "P");
+
+            const resultDiv = document.getElementById("resultSection");
+            resultDiv.innerHTML = `<h3>Your MBTI Type is:</h3><div><h1>${mbtiType}</h1></div>`;
+            window.scrollTo(0, document.body.scrollHeight);
+        }
+    </script>
+</body>
+</html>
